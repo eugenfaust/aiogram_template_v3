@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.dispatcher.filters import Command
 
-from filters import AdminFilter
+from main_bot.filters import AdminFilter
 from .help import bot_help
 from .start import bot_start, clb_start
 

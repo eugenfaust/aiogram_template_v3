@@ -26,7 +26,7 @@ class BaseModel(db.Model):
 
 
 async def start_db():
-    await db.set_bind(config.POSTGRES_URI)
+    await db.set_bind(config.MAIN_POSTGRES_URI)
     db.gino: GinoSchemaVisitor
     await db.gino.create_all()
 

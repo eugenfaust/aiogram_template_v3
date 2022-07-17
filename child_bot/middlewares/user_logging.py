@@ -1,11 +1,10 @@
 import datetime
-import logging
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 
-from models import User
+from main_bot.models import User
 
 
 class UserLoggingMiddleware(BaseMiddleware):

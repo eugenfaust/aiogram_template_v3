@@ -1,9 +1,7 @@
-import logging
-
 from aiogram import types
 
-from keyboards.inline.menu import get_menu
-from models import User
+from main_bot.keyboards.inline.menu import get_menu
+from main_bot.models import User
 
 
 async def bot_start(msg: types.Message, user: User):
