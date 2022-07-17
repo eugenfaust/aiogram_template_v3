@@ -1,7 +1,6 @@
 
-from models.base import db
 
-__all__ = ("db", "User")
+__all__ = ("User", )
 
 
 from models.users import User
