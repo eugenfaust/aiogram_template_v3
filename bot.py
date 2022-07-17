@@ -20,12 +20,17 @@ from aiogram.dispatcher.webhook.aiohttp_server import (
 )
 from aiogram.exceptions import TelegramUnauthorizedError
 from aiogram.types import Message
-
+from models.base import start_db, shutdown_db
 from middlewares.counter import CountMiddleware
 
 
 async def on_startup(dispatcher: Dispatcher, bot: Bot):
+    await start_db()
     await bot.set_webhook(f"{config.BASE_URL}{config.MAIN_BOT_PATH}")
+
+
+async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
+    await shutdown_db()
 
 
 def main():
@@ -48,6 +53,7 @@ def main():
     main_dispatcher.include_router(user.setup())
 
     main_dispatcher.startup.register(on_startup)
+    main_dispatcher.shutdown.register(on_startup)
     app = web.Application()
     SimpleRequestHandler(dispatcher=main_dispatcher, bot=bot).register(app, path=config.MAIN_BOT_PATH)
     setup_application(app, main_dispatcher, bot=bot)
