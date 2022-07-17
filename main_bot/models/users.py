@@ -1,9 +1,9 @@
 from sqlalchemy import sql, Column, BigInteger, String, Integer, Boolean, DateTime
 
-from .base import BaseModel
+from .base import Base, ModelAdmin
 
 
-class User(BaseModel):
+class User(Base, ModelAdmin):
     __tablename__ = 'users'
     query: sql.Select
     id = Column(BigInteger, primary_key=True, unique=True)
