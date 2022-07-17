@@ -5,7 +5,8 @@ from models.base import start_db, shutdown_db
 
 
 async def on_startup(dispatcher: Dispatcher, bot: Bot):
-    await start_db()
+    await bot.delete_webhook()
+    #await start_db()
 
 
 async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
@@ -14,5 +15,5 @@ async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
 
 if __name__ == "__main__":
     main_dispatcher.startup.register(on_startup)
-    main_dispatcher.shutdown.register(on_shutdown)
+    #main_dispatcher.shutdown.register(on_shutdown)
     main_dispatcher.run_polling(ai_bot)
