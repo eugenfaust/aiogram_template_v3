@@ -11,4 +11,5 @@ class User(BaseModel):
     admin = Column(Boolean, default=False)
     last_action = Column(DateTime(timezone=True))
     username = Column(String(50))
+    full_name = Column(String(50))
     created = Column(DateTime(timezone=True))

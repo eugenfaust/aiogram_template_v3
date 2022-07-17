@@ -6,7 +6,7 @@ import config
 from filters import AdminFilter
 from handlers import errors
 from handlers import user
-from middlewares.counter import CountMiddleware
+from middlewares.user_logging import UserLoggingMiddleware
 
 session = AiohttpSession()
 bot_settings = {"session": session, "parse_mode": "HTML"}
@@ -19,8 +19,8 @@ main_dispatcher = Dispatcher(storage=storage)
 main_dispatcher.message.bind_filter(AdminFilter)
 main_dispatcher.callback_query.bind_filter(AdminFilter)
 # middlewares
-main_dispatcher.message.middleware(CountMiddleware())
-main_dispatcher.callback_query.middleware(CountMiddleware())
+main_dispatcher.message.middleware(UserLoggingMiddleware())
+main_dispatcher.callback_query.middleware(UserLoggingMiddleware())
 
 # routers
 main_dispatcher.include_router(errors.setup())
