@@ -24,5 +24,5 @@ class UserLoggingMiddleware(BaseMiddleware):
                                      username=event.from_user.username, created=datetime.datetime.now())
         data['user'] = user
         result = await handler(event, data)
-        await User.update(event.from_user.id, last_action=datetime.datetime.now())
+        await user.update(last_action=datetime.datetime.now()).apply()
         return result
