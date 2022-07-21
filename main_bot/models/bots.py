@@ -1,9 +1,9 @@
 from sqlalchemy import sql, Column, BigInteger, String, Integer, Boolean, DateTime, ForeignKey
 
-from .base import Base, ModelAdmin
+from .base import BaseModel
 
 
-class UserBot(Base, ModelAdmin):
+class UserBot(BaseModel):
     __tablename__ = 'bots'
     query: sql.Select
     id = Column(BigInteger, primary_key=True, unique=True, autoincrement=True)

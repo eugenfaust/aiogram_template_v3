@@ -9,18 +9,26 @@ from main_bot.filters import AdminFilter
 from main_bot.handlers import user as main_user, errors as main_errors
 from child_bot.handlers import user as child_user, errors as child_errors
 from main_bot.middlewares.user_logging import UserLoggingMiddleware
-from main_bot.models.base import init_db
-from child_bot.models.base import init_db as child_init_db
+from main_bot.models.base import start_db, shutdown_db
+from child_bot.models.base import start_db as child_start_db, shutdown_db as child_shutdown_db
 
 
 async def on_startup(dispatcher: Dispatcher, bot: Bot):
-    await init_db()
+    await start_db()
     await bot.set_webhook(f"{config.BASE_URL}{config.MAIN_BOT_PATH}")
+
+
+async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
+    await shutdown_db()
 
 
 async def child_on_startup(dispatcher: Dispatcher, bot: Bot):
-    await child_init_db()
+    await child_start_db()
     await bot.set_webhook(f"{config.BASE_URL}{config.MAIN_BOT_PATH}")
+
+
+async def child_on_shutdown(dispatcher: Dispatcher, bot: Bot):
+    await child_shutdown_db()
 
 
 def main():
@@ -43,6 +51,7 @@ def main():
     main_dispatcher.include_router(main_errors.setup())
     main_dispatcher.include_router(main_user.setup())
     main_dispatcher.startup.register(on_startup)
+    main_dispatcher.shutdown.register(on_shutdown)
 
     # CHILD BOT
     multibot_dispatcher.include_router(child_user.setup())
@@ -57,6 +66,7 @@ def main():
     multibot_dispatcher.include_router(main_errors.setup())
     multibot_dispatcher.include_router(main_user.setup())
     multibot_dispatcher.startup.register(on_startup)
+    multibot_dispatcher.shutdown.register(on_shutdown)
 
 
     app = web.Application()

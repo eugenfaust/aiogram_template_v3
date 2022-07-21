@@ -1,63 +1,37 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
-from sqlalchemy import update as sqlalchemy_update, select
+import datetime
+from typing import List
+
+import sqlalchemy as sa
+from gino import Gino
+from gino.schema import GinoSchemaVisitor
 
 import config
-Base = declarative_base()
+
+db = Gino()
 
 
-class AsyncDatabaseSession:
-    def __init__(self):
-        self._session = None
-        self._engine = None
+class BaseModel(db.Model):
+    __abstract__ = True
 
-    def __getattr__(self, name):
-        return getattr(self._session, name)
-
-    async def init(self):
-        self._engine = create_async_engine(
-            config.MAIN_POSTGRES_URI,
-            echo=True,
-        )
-
-        self._session = sessionmaker(
-            self._engine, expire_on_commit=False, class_=AsyncSession
-        )()
-
-    async def create_all(self):
-        async with self._engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+    def __str__(self):
+        model = self.__class__.__name__
+        table: sa.Table = sa.inspect(self.__class__)
+        primary_key_columns: List[sa.Column] = table.primary_key.columns
+        values = {
+            column.name: getattr(self, self._column_name_map[column.name])
+            for column in primary_key_columns
+        }
+        values_str = " ".join(f"{name}={value!r}" for name, value in values.items())
+        return f"<{model} {values_str}>"
 
 
-class ModelAdmin:
-    @classmethod
-    async def create(cls, **kwargs):
-        async_db_session.add(cls(**kwargs))
-        await async_db_session.commit()
-
-    @classmethod
-    async def update(cls, id, **kwargs):
-        query = (
-            sqlalchemy_update(cls)
-            .where(cls.id == id)
-            .values(**kwargs)
-            .execution_options(synchronize_session="fetch")
-        )
-
-        await async_db_session.execute(query)
-        await async_db_session.commit()
-
-    @classmethod
-    async def get(cls, id):
-        query = select(cls).where(cls.id == id)
-        results = await async_db_session.execute(query)
-        (result,) = results.one()
-        return result
+async def start_db():
+    await db.set_bind(config.MAIN_POSTGRES_URI)
+    db.gino: GinoSchemaVisitor
+    await db.gino.create_all()
 
 
-async_db_session = AsyncDatabaseSession()
-
-
-async def init_db():
-    await async_db_session.init()
-    await async_db_session.create_all()
+async def shutdown_db():
+    bind = db.pop_bind()
+    if bind:
+        await bind.close()
