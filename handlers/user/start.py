@@ -3,7 +3,7 @@ import logging
 from aiogram import types
 
 from keyboards.inline.menu import get_menu
-from models import User
+from models.users import User
 
 
 async def bot_start(msg: types.Message, user: User):

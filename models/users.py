@@ -1,11 +1,11 @@
-from sqlalchemy import sql, Column, BigInteger, String, Integer, Boolean, DateTime
+from sqlalchemy import Column, BigInteger, String, Boolean, DateTime
 
-from .base import BaseModel
+from .base import Base
 
 
-class User(BaseModel):
+class User(Base):
     __tablename__ = 'users'
-    query: sql.Select
+
     id = Column(BigInteger, primary_key=True, unique=True, autoincrement=True)
     status = Column(Boolean, default=True)
     admin = Column(Boolean, default=False)
