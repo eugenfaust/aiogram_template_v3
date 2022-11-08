@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.dispatcher.filters import Command
+from aiogram.filters import Command
 
 from filters import AdminFilter
 from .help import bot_help

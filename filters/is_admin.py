@@ -1,8 +1,5 @@
-from abc import ABC
-from typing import Any
-
 from aiogram import types
-from aiogram.dispatcher.filters import BaseFilter
+from aiogram.filters import BaseFilter
 
 import config
 

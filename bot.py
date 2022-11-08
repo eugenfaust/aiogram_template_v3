@@ -1,9 +1,8 @@
 from aiogram import Bot, Dispatcher
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.memory import MemoryStorage
 
 import config
-from filters import AdminFilter
 from handlers import errors
 from handlers import user
 from middlewares.user_logging import UserLoggingMiddleware
@@ -15,9 +14,6 @@ ai_bot = Bot(token=config.MAIN_BOT_TOKEN, **bot_settings)
 storage = MemoryStorage()
 
 main_dispatcher = Dispatcher(storage=storage)
-# filters
-main_dispatcher.message.bind_filter(AdminFilter)
-main_dispatcher.callback_query.bind_filter(AdminFilter)
 # middlewares
 main_dispatcher.message.middleware(UserLoggingMiddleware())
 main_dispatcher.callback_query.middleware(UserLoggingMiddleware())
